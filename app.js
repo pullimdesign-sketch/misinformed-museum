@@ -79,6 +79,7 @@ const experiments = [
 
 let currentRecord = null;
 let approvalTimer = null;
+let generationSequence = 0;
 
 function hash(text) {
   return [...text].reduce((a,c) => ((a << 5) - a + c.charCodeAt(0)) | 0, 2166136261) >>> 0;
@@ -95,6 +96,90 @@ function seededPick(list, seed, count) {
 
 function normalizeKoreanName(value){
   return value.replace(/[^가-힣]/g,'').slice(0,10);
+}
+
+function escapeXml(value){
+  return String(value).replace(/[<>&'\"]/g, character => ({'<':'&lt;','>':'&gt;','&':'&amp;',"'":'&apos;','\"':'&quot;'}[character]));
+}
+
+function fallbackArchiveImage(record,type){
+  const seed=record.seed+(type==='reconstruction'?173:0);
+  const accent=['#829d68','#9fb77f','#728b62'][seed%3];
+  const shape=seed%4;
+  const objectShapes=[
+    `<ellipse cx="512" cy="498" rx="260" ry="126"/><rect x="264" y="420" width="496" height="156" rx="78"/>`,
+    `<path d="M270 640 420 276h184l150 364-128 54-114-278-114 278z"/>`,
+    `<rect x="292" y="278" width="440" height="440" rx="92"/><circle cx="512" cy="498" r="112"/>`,
+    `<path d="M252 350c120-98 400-98 520 0v294c-120 98-400 98-520 0z"/><path d="M352 498h320"/>`
+  ];
+  const scene=type==='artifact'
+    ? `<g fill="none" stroke="${accent}" stroke-width="12">${objectShapes[shape]}</g><g fill="${accent}" opacity=".14">${objectShapes[shape]}</g>`
+    : `<circle cx="512" cy="390" r="112" fill="${accent}" opacity=".85"/><path d="M260 780c26-190 124-276 252-276s226 86 252 276" fill="${accent}" opacity=".42"/><g fill="none" stroke="#d9dbcf" stroke-width="9" opacity=".78">${objectShapes[shape]}</g>`;
+  const label=type==='artifact'?'OPTICAL SURVEY / UNVERIFIED':'CULTURAL RECONSTRUCTION / APPROVED';
+  const svg=`<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+    <rect width="1024" height="1024" fill="#232323"/>
+    <g stroke="#d9dbcf" opacity=".12"><path d="M64 128h896M64 896h896M128 64v896M896 64v896"/><circle cx="512" cy="512" r="360" fill="none"/><circle cx="512" cy="512" r="274" fill="none" stroke-dasharray="10 16"/></g>
+    ${scene}
+    <text x="72" y="96" fill="${accent}" font-family="Arial,sans-serif" font-size="25" letter-spacing="5">MHR 2526 · ${label}</text>
+    <text x="72" y="944" fill="#d9dbcf" opacity=".76" font-family="Arial,sans-serif" font-size="24">${escapeXml(record.accession)}</text>
+  </svg>`;
+  return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;
+}
+
+function setGeneratedImage(type,src,sourceLabel){
+  const prefix=type==='artifact'?'artifact':'reconstruction';
+  const visual=$(`#${prefix}-visual`);
+  const image=$(`#${prefix}-image`);
+  const status=$(`#${prefix}-image-status`);
+  const source=$(`#${prefix}-image-source`);
+  image.onload=()=>{
+    image.hidden=false;
+    visual.classList.remove('is-generating');
+    visual.classList.add('is-generated');
+  };
+  image.src=src;
+  status.textContent=type==='artifact'?'발굴 유물 광학 기록 완료':'승인된 문화 복원 기록 완료';
+  source.textContent=sourceLabel;
+}
+
+function resetGeneratedImage(type){
+  const prefix=type==='artifact'?'artifact':'reconstruction';
+  const visual=$(`#${prefix}-visual`);
+  const image=$(`#${prefix}-image`);
+  visual.classList.add('is-generating');
+  visual.classList.remove('is-generated','is-fallback');
+  image.hidden=true;
+  image.removeAttribute('src');
+  $(`#${prefix}-image-status`).textContent=type==='artifact'?'유물 광학 기록 생성 중':'승인된 해석을 문화 장면으로 복원 중';
+  $(`#${prefix}-image-source`).textContent=type==='artifact'?'OPENAI IMAGE MODEL · SECURE LINK':'HUMAN APPROVAL → AI RECONSTRUCTION';
+}
+
+async function generateMuseumImage(type){
+  if(!currentRecord) return;
+  const sequence=++generationSequence;
+  const prefix=type==='artifact'?'artifact':'reconstruction';
+  resetGeneratedImage(type);
+  const selected=currentRecord.hypotheses[currentRecord.selectedIndex ?? 0];
+  const payload={
+    type,
+    name:currentRecord.name,
+    accession:currentRecord.accession,
+    title:currentRecord.title,
+    hypothesis:selected?.[0] || '',
+    hypothesisDescription:selected?.[1] || ''
+  };
+  try{
+    const response=await fetch('/api/generate-image',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+    if(!response.ok) throw new Error(`image endpoint ${response.status}`);
+    const data=await response.json();
+    if(!data.image) throw new Error('empty image');
+    if(sequence!==generationSequence && type==='artifact') return;
+    setGeneratedImage(type,data.image,'OPENAI IMAGE MODEL · LIVE GENERATION');
+  }catch(error){
+    const visual=$(`#${prefix}-visual`);
+    visual.classList.add('is-fallback');
+    setGeneratedImage(type,fallbackArchiveImage(currentRecord,type),'EXHIBITION DEMO · API CONNECTION REQUIRED');
+  }
 }
 
 $('#artifact-name').addEventListener('input', event => {
@@ -190,6 +275,7 @@ function renderResult(name){
   $('#analysis').hidden=true; $('#result').hidden=false;
   showScene(0,false);
   window.scrollTo({top:0,behavior:'smooth'});
+  generateMuseumImage('artifact');
 }
 
 function showScene(index,scroll=true){
@@ -216,6 +302,9 @@ function approveRecord(){
   $('#approved-record').hidden=false;
   $('#result-footer').hidden=false;
   updateApprovedLabel();
+  const hypothesis=currentRecord.hypotheses[currentRecord.selectedIndex ?? 0];
+  $('#reconstruction-caption').textContent=`‘${hypothesis[0]}’ 가설을 바탕으로 생성된 2026년 생활 복원`;
+  generateMuseumImage('reconstruction');
   setTimeout(()=>$('#approved-record').scrollIntoView({behavior:'smooth',block:'start'}),80);
 }
 
@@ -259,6 +348,7 @@ $$('[data-judgment]').forEach(button=>button.addEventListener('click',()=>{
 }));
 
 $('#restart-button').addEventListener('click',()=>{
+  generationSequence++;
   $('#result').hidden=true;$('#intake').hidden=false;$('#artifact-form').reset();
   cancelApproval();
   window.scrollTo({top:0,behavior:'smooth'});

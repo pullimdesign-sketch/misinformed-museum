@@ -6,7 +6,7 @@
   <title>오인된 박물관 학예 판단 시스템</title>
   <meta name="description" content="일상용품을 미래 박물관의 유물로 재해석하는 관람객용 학예 판단 시스템" />
   <link rel="icon" href="./favicon.svg" />
-  <link rel="stylesheet" href="./styles.css?v=7" />
+  <link rel="stylesheet" href="./styles.css?v=8" />
 </head>
 <body>
   <main class="shell">
@@ -87,10 +87,16 @@
 
       <div class="evidence-layout result-scene is-active" data-scene="0">
         <figure class="artifact-figure">
-          <div class="artifact-token" role="img" aria-label="이름이 봉인된 등록 유물">
+          <div id="artifact-visual" class="artifact-token is-generating" role="img" aria-label="AI가 생성 중인 발굴 유물 사진">
+            <img id="artifact-image" alt="2526년 박물관이 생성한 발굴 유물 기록 사진" hidden />
             <span class="token-code">MHR</span>
             <b id="result-object-glyph">?</b>
             <span>ORIGINAL CONTEXT SEALED</span>
+            <div class="image-generation-state" aria-live="polite">
+              <i></i>
+              <strong id="artifact-image-status">유물 광학 기록 생성 중</strong>
+              <small id="artifact-image-source">OPENAI IMAGE MODEL · SECURE LINK</small>
+            </div>
           </div>
           <figcaption><span id="sealed-name">2026 DESIGNATION · SEALED</span><span id="object-metrics"></span></figcaption>
         </figure>
@@ -137,6 +143,23 @@
           <small>1.2초 동안 누르세요</small>
         </div>
         <div id="approved-record" class="approved-record" hidden>
+          <figure class="reconstruction-figure">
+            <div id="reconstruction-visual" class="reconstruction-visual is-generating">
+              <img id="reconstruction-image" alt="승인된 가설을 바탕으로 생성한 2026년 문화 복원 장면" hidden />
+              <div class="reconstruction-placeholder" aria-hidden="true">
+                <span>SCREEN B</span><b>?</b><i></i>
+              </div>
+              <div class="image-generation-state" aria-live="polite">
+                <i></i>
+                <strong id="reconstruction-image-status">승인된 해석을 문화 장면으로 복원 중</strong>
+                <small id="reconstruction-image-source">HUMAN APPROVAL → AI RECONSTRUCTION</small>
+              </div>
+            </div>
+            <figcaption>
+              <span>CULTURAL RECONSTRUCTION · 2026/2526</span>
+              <span id="reconstruction-caption">승인 이후 생성되는 공식 복원 이미지</span>
+            </figcaption>
+          </figure>
           <section class="museum-label" aria-labelledby="label-title">
             <div class="label-mark">
               <span>THE</span><b>MISINFORMED</b><span>MUSEUM</span>
@@ -175,6 +198,6 @@
       </footer>
     </section>
   </main>
-  <script src="./app.js?v=7"></script>
+  <script src="./app.js?v=8"></script>
 </body>
 </html>
