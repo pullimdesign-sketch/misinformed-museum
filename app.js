@@ -119,7 +119,7 @@ $('#artifact-form').addEventListener('submit', async (event) => {
 });
 
 async function runAnalysis(){
-  const titles=['물질적 흔적을 분리하고 있습니다','2026년의 사용 맥락을 봉인합니다','가능한 역사를 발산하고 있습니다','검증 가능한 실험을 배열합니다','공식 기록을 승인합니다'];
+  const titles=['표면의 물질적 흔적을 추출합니다','실제 이름과 용도를 봉인합니다','복수의 해석 가설을 생성합니다','반증 가능한 실험을 설계합니다','학예위원의 검토를 기다립니다'];
   for(let i=0;i<5;i++){
     $$('#analysis-steps li').forEach((el,j)=>{el.classList.toggle('active',j===i);el.classList.toggle('done',j<i)});
     $('#analysis-title').textContent=titles[i]; $('#progress-bar').style.width=`${(i+1)*20}%`;
@@ -226,6 +226,7 @@ $('#hypothesis-next').addEventListener('click',()=>{
   showScene(2);
 });
 $('#experiment-next').addEventListener('click',()=>showScene(3));
+$('#return-hypothesis').addEventListener('click',()=>showScene(1));
 
 const holdButton=$('#hold-approve');
 function beginApproval(){

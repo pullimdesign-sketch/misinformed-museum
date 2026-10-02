@@ -6,7 +6,7 @@
   <title>오인된 박물관 학예 판단 시스템</title>
   <meta name="description" content="일상용품을 미래 박물관의 유물로 재해석하는 관람객용 학예 판단 시스템" />
   <link rel="icon" href="./favicon.svg" />
-  <link rel="stylesheet" href="./styles.css?v=3" />
+  <link rel="stylesheet" href="./styles.css?v=7" />
 </head>
 <body>
   <main class="shell">
@@ -24,9 +24,15 @@
 
     <section id="intake" class="intake-grid" aria-labelledby="intake-title">
       <div class="intro-copy">
-        <p class="step-label">00 · NEW ACCESSION</p>
-        <h2 id="intake-title">물건 하나를<br>제보해 주세요.</h2>
-        <p class="intake-directive">이름은 즉시 봉인됩니다.<br>남겨진 흔적만으로 역사를 복원합니다.</p>
+        <p class="step-label">TEMPORARY CURATOR ACCESS</p>
+        <h2 id="intake-title">오늘의<br>학예위원은<br>당신입니다.</h2>
+        <p class="intake-directive">AI가 만든 가설을 검토하고, 이 해석을 공식 역사로 남길지 결정하세요.</p>
+        <ol class="procedure-map" aria-label="학예 판단 절차">
+          <li><b>01</b><span>등록<br><small>물건 제보</small></span></li>
+          <li><b>02</b><span>해석<br><small>AI 가설 선택</small></span></li>
+          <li><b>03</b><span>검증<br><small>실험 범위 확인</small></span></li>
+          <li><b>04</b><span>책임<br><small>공식 기록 결정</small></span></li>
+        </ol>
       </div>
 
       <form id="artifact-form" class="intake-card">
@@ -41,7 +47,7 @@
           <p id="name-rule" class="input-rule">공백 없이 한글 물건 명사 1–10자</p>
           <div class="entry-scale" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
         </div>
-        <button class="primary-button" type="submit">유물 등록 후 봉인</button>
+        <button class="primary-button" type="submit">학예 판단 절차 시작</button>
         <p id="form-error" class="form-error" role="alert" hidden>공백 없이 한글 물건 명사를 10자 이내로 입력해주세요.</p>
       </form>
     </section>
@@ -76,7 +82,7 @@
       </header>
 
       <div class="result-provenance" aria-label="학예 판단 단계">
-        <span data-progress="0" class="current">01 관찰</span><i></i><span data-progress="1">02 가설</span><i></i><span data-progress="2">03 실험</span><i></i><span data-progress="3">04 승인</span>
+        <span data-progress="0" class="current">01 증거 읽기</span><i></i><span data-progress="1">02 해석 선택</span><i></i><span data-progress="2">03 검증 범위</span><i></i><span data-progress="3">04 기록 책임</span>
       </div>
 
       <div class="evidence-layout result-scene is-active" data-scene="0">
@@ -127,6 +133,7 @@
           <h3 id="approval-title">이 가설을<br>공식 역사로 남기시겠습니까?</h3>
           <p>승인 이후 이 해석은 박물관의 공식 기록이 됩니다.</p>
           <button id="hold-approve" class="hold-button" type="button"><span>길게 눌러 승인 도장 찍기</span><i aria-hidden="true"></i></button>
+          <button id="return-hypothesis" class="return-button" type="button">보류하고 다른 가설 검토</button>
           <small>1.2초 동안 누르세요</small>
         </div>
         <div id="approved-record" class="approved-record" hidden>
@@ -168,6 +175,6 @@
       </footer>
     </section>
   </main>
-  <script src="./app.js?v=3"></script>
+  <script src="./app.js?v=7"></script>
 </body>
 </html>
