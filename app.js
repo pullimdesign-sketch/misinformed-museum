@@ -77,6 +77,9 @@ const experiments = [
   ['진동 감쇠 비교','동일한 기계 진동을 입력하고 구조별 감쇠 시간을 기록합니다.','검증 범위 · 재료 반응']
 ];
 
+let currentRecord = null;
+let approvalTimer = null;
+
 function hash(text) {
   return [...text].reduce((a,c) => ((a << 5) - a + c.charCodeAt(0)) | 0, 2166136261) >>> 0;
 }
@@ -138,6 +141,7 @@ function renderResult(name){
   const hypotheses=profile?.hypotheses || seededPick(genericHypotheses,seed,4);
   const chosenExperiments=seededPick(experiments,seed,3);
   const confidence=68+(seed%19);
+  currentRecord={name,seed,accession,title,className,observations,hypotheses,chosenExperiments,confidence,selectedIndex:null};
 
   $('#accession-number').textContent=accession;
   $('#label-accession').textContent=accession;
@@ -147,28 +151,115 @@ function renderResult(name){
   $('#object-metrics').textContent=`INPUT ${name.length} SYLLABLES · CONTEXT REMOVED`;
   $('#observations').innerHTML=observations.slice(0,6).map(o=>`<li>${o}</li>`).join('');
   $('#hypothesis-grid').innerHTML=hypotheses.map((h,i)=>`
-    <article class="hypothesis-card ${i===0?'active':''}">
+    <article class="hypothesis-card">
       <button type="button" aria-label="가설 ${i+1} 보기">
         <span class="hypothesis-number">HYPOTHESIS 0${i+1}</span>
         <h4>${h[0]}</h4><p>${h[1]}</p>
         <p class="hypothesis-meta">근거 연결도 ${72+((seed+i*7)%23)}%</p>
       </button>
     </article>`).join('');
-  $$('.hypothesis-card button').forEach(btn=>btn.addEventListener('click',()=>{
+  $$('.hypothesis-card button').forEach((btn,index)=>btn.addEventListener('click',()=>{
+    currentRecord.selectedIndex=index;
     $$('.hypothesis-card').forEach(c=>c.classList.remove('active'));btn.closest('.hypothesis-card').classList.add('active');
+    $('#hypothesis-instruction').textContent=`‘${hypotheses[index][0]}’을 승인 후보로 선택했습니다.`;
+    $('#hypothesis-next').disabled=false;
   }));
   $('#experiment-list').innerHTML=chosenExperiments.map((e,i)=>`
-    <article class="experiment-row"><span class="test-id">TEST 0${i+1}</span><b>${e[0]}</b><span>${e[1]}<br>${e[2]}</span></article>`).join('');
+    <button type="button" class="experiment-row" data-test="${i}"><span class="test-id">TEST 0${i+1}</span><b>${e[0]}</b><span>${e[1]}<br>${e[2]}</span><em>미검토</em></button>`).join('');
+  $$('.experiment-row').forEach(row=>row.addEventListener('click',()=>{
+    row.classList.toggle('reviewed');
+    row.querySelector('em').textContent=row.classList.contains('reviewed')?'검토 완료':'미검토';
+    const complete=$$('.experiment-row.reviewed').length===$$('.experiment-row').length;
+    $('#experiment-next').disabled=!complete;
+    $('#experiment-instruction').textContent=complete?'모든 실험의 검증 범위를 확인했습니다.':`${$$('.experiment-row.reviewed').length} / ${$$('.experiment-row').length} 기록 검토 완료`;
+  }));
   $('#label-classification').textContent=className;
   $('#label-confidence').textContent=`${confidence}% · PROVISIONAL`;
-  $('#label-description').textContent=`본 유물은 ${observations[0]}와 ${observations[2]}을 가진 생활 유물이다. 미래 박물관은 이를 ‘${hypotheses[0][0]}’로 분류했다. ${hypotheses[0][1]}였을 가능성이 제기되지만, 이 결론은 물질적 관찰만으로 직접 증명되지 않는다.`;
+  $('#label-description').textContent='';
   $('#truth-name').textContent=name;
+  $('#hypothesis-next').disabled=true;
+  $('#hypothesis-instruction').textContent='승인 후보를 한 장 선택하세요.';
+  $('#experiment-next').disabled=true;
+  $('#experiment-instruction').textContent='세 개의 실험 기록을 모두 검토하세요.';
+  $('#approval-gate').hidden=false;
+  $('#approved-record').hidden=true;
+  $('#result-footer').hidden=true;
+  $('#truth-envelope').open=false;
+  $('#judgment-prompt').hidden=true;
+  $('#judgment-response').textContent='';
   $('#analysis').hidden=true; $('#result').hidden=false;
+  showScene(0,false);
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
+function showScene(index,scroll=true){
+  $$('.result-scene').forEach(scene=>scene.classList.toggle('is-active',Number(scene.dataset.scene)===index));
+  $$('[data-progress]').forEach(step=>{
+    const value=Number(step.dataset.progress);
+    step.classList.toggle('current',value===index);
+    step.classList.toggle('complete',value<index);
+  });
+  if(scroll) $('.result-provenance').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function updateApprovedLabel(){
+  const index=currentRecord.selectedIndex ?? 0;
+  const hypothesis=currentRecord.hypotheses[index];
+  $('#label-confidence').textContent=`${currentRecord.confidence}% · PROVISIONAL`;
+  $('#label-description').textContent=`본 유물은 ${currentRecord.observations[0]}와 ${currentRecord.observations[2]}을 가진 생활 유물이다. 미래 박물관은 이를 ‘${hypothesis[0]}’로 분류했다. ${hypothesis[1]}였을 가능성이 제기되지만, 이 결론은 물질적 관찰만으로 직접 증명되지 않는다.`;
+}
+
+function approveRecord(){
+  clearTimeout(approvalTimer);
+  $('#hold-approve').classList.remove('is-holding');
+  $('#approval-gate').hidden=true;
+  $('#approved-record').hidden=false;
+  $('#result-footer').hidden=false;
+  updateApprovedLabel();
+  setTimeout(()=>$('#approved-record').scrollIntoView({behavior:'smooth',block:'start'}),80);
+}
+
+$$('[data-next-scene]').forEach(button=>button.addEventListener('click',()=>showScene(Number(button.dataset.nextScene))));
+$('#hypothesis-next').addEventListener('click',()=>{
+  if(currentRecord?.selectedIndex===null) return;
+  updateApprovedLabel();
+  showScene(2);
+});
+$('#experiment-next').addEventListener('click',()=>showScene(3));
+
+const holdButton=$('#hold-approve');
+function beginApproval(){
+  if(approvalTimer) return;
+  holdButton.classList.add('is-holding');
+  approvalTimer=setTimeout(()=>{approvalTimer=null;approveRecord();},1200);
+}
+function cancelApproval(){
+  clearTimeout(approvalTimer);approvalTimer=null;holdButton.classList.remove('is-holding');
+}
+holdButton.addEventListener('pointerdown',beginApproval);
+holdButton.addEventListener('pointerup',cancelApproval);
+holdButton.addEventListener('pointerleave',cancelApproval);
+holdButton.addEventListener('pointercancel',cancelApproval);
+holdButton.addEventListener('keydown',event=>{if(event.code==='Space'||event.code==='Enter'){event.preventDefault();beginApproval();}});
+holdButton.addEventListener('keyup',event=>{if(event.code==='Space'||event.code==='Enter')cancelApproval();});
+
+$('#truth-envelope').addEventListener('toggle',event=>{
+  if(event.target.open){
+    $('#judgment-prompt').hidden=false;
+    setTimeout(()=>$('#judgment-prompt').scrollIntoView({behavior:'smooth',block:'center'}),100);
+  }
+});
+
+$$('[data-judgment]').forEach(button=>button.addEventListener('click',()=>{
+  $$('[data-judgment]').forEach(choice=>choice.classList.toggle('selected',choice===button));
+  $('#judgment-response').textContent=button.dataset.judgment==='ai'
+    ? 'AI는 가설을 만들었습니다. 그러나 그것을 역사로 승인한 것은 인간과 기관입니다.'
+    : '박물관의 승인은 불완전한 추론을 공식적인 사실로 바꾸었습니다.';
+}));
+
 $('#restart-button').addEventListener('click',()=>{
   $('#result').hidden=true;$('#intake').hidden=false;$('#artifact-form').reset();
+  cancelApproval();
   window.scrollTo({top:0,behavior:'smooth'});
 });
 $('#print-button').addEventListener('click',()=>window.print());

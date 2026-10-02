@@ -6,7 +6,7 @@
   <title>오인된 박물관 학예 판단 시스템</title>
   <meta name="description" content="일상용품을 미래 박물관의 유물로 재해석하는 관람객용 학예 판단 시스템" />
   <link rel="icon" href="./favicon.svg" />
-  <link rel="stylesheet" href="./styles.css" />
+  <link rel="stylesheet" href="./styles.css?v=3" />
 </head>
 <body>
   <main class="shell">
@@ -25,9 +25,8 @@
     <section id="intake" class="intake-grid" aria-labelledby="intake-title">
       <div class="intro-copy">
         <p class="step-label">00 · NEW ACCESSION</p>
-        <h2 id="intake-title">당신의 물건은<br>어떤 역사로 남을까요?</h2>
-        <p>2026년의 실제 물건 이름을 등록하면, 미래 박물관이 이름에서 사용 맥락을 제거하고 새로운 용도를 추론합니다.</p>
-        <p class="small-note">입력한 이름은 기록 봉투에 봉인됩니다. 분석 과정에서는 물건의 일반적인 형태와 물질적 특징만 사용합니다.</p>
+        <h2 id="intake-title">물건 하나를<br>제보해 주세요.</h2>
+        <p class="intake-directive">이름은 즉시 봉인됩니다.<br>남겨진 흔적만으로 역사를 복원합니다.</p>
       </div>
 
       <form id="artifact-form" class="intake-card">
@@ -42,7 +41,7 @@
           <p id="name-rule" class="input-rule">공백 없이 한글 물건 명사 1–10자</p>
           <div class="entry-scale" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
         </div>
-        <button class="primary-button" type="submit">미래 해석 시작</button>
+        <button class="primary-button" type="submit">유물 등록 후 봉인</button>
         <p id="form-error" class="form-error" role="alert" hidden>공백 없이 한글 물건 명사를 10자 이내로 입력해주세요.</p>
       </form>
     </section>
@@ -77,10 +76,10 @@
       </header>
 
       <div class="result-provenance" aria-label="학예 판단 단계">
-        <span>01 관찰</span><i></i><span>02 가설</span><i></i><span>03 실험</span><i></i><span>04 승인</span>
+        <span data-progress="0" class="current">01 관찰</span><i></i><span data-progress="1">02 가설</span><i></i><span data-progress="2">03 실험</span><i></i><span data-progress="3">04 승인</span>
       </div>
 
-      <div class="evidence-layout">
+      <div class="evidence-layout result-scene is-active" data-scene="0">
         <figure class="artifact-figure">
           <div class="artifact-token" role="img" aria-label="이름이 봉인된 등록 유물">
             <span class="token-code">MHR</span>
@@ -93,53 +92,82 @@
           <p class="step-label">01 · OBSERVATION</p>
           <h3 id="observation-title">관찰된 물질적 단서</h3>
           <ul id="observations" class="observation-list"></ul>
-          <p class="method-note">기능을 추정하기 전, 사진에서 확인 가능한 형태와 표면 정보만 기록했습니다.</p>
+          <p class="method-note">명칭과 용도는 봉인되어 있습니다. 지금 보이는 흔적만 기억하세요.</p>
+          <button class="scene-button" type="button" data-next-scene="1">가설 보관실 입장</button>
         </section>
       </div>
 
-      <section class="hypothesis-section" aria-labelledby="hypothesis-title">
+      <section class="hypothesis-section result-scene" data-scene="1" aria-labelledby="hypothesis-title">
         <div class="section-heading">
           <div><p class="step-label">02 · HYPOTHESIS</p><h3 id="hypothesis-title">미래 박물관의 네 가지 가설</h3></div>
-          <p>각 가설은 관찰에서 출발하지만, 그 단서만으로는 기능을 증명할 수 없습니다.</p>
+          <p>한 가지 해석을 선택하세요. 당신의 선택이 다음 기록의 방향을 결정합니다.</p>
         </div>
         <div id="hypothesis-grid" class="hypothesis-grid"></div>
+        <div class="scene-action">
+          <p id="hypothesis-instruction">승인 후보를 한 장 선택하세요.</p>
+          <button id="hypothesis-next" class="scene-button" type="button" disabled>선택한 가설로 실험 설계</button>
+        </div>
       </section>
 
-      <section class="experiment-section" aria-labelledby="experiment-title">
+      <section class="experiment-section result-scene" data-scene="2" aria-labelledby="experiment-title">
         <div class="section-heading">
           <div><p class="step-label">03 · PROPOSED TESTS</p><h3 id="experiment-title">검증을 위한 실험 제안</h3></div>
-          <p>실험은 물성을 확인합니다. 용도를 직접 증명하지는 않습니다.</p>
+          <p>각 기록지를 눌러 검증 범위를 확인하세요.</p>
         </div>
         <div id="experiment-list" class="experiment-list"></div>
-      </section>
-
-      <section class="museum-label" aria-labelledby="label-title">
-        <div class="label-mark">
-          <span>THE</span><b>MISINFORMED</b><span>MUSEUM</span>
-        </div>
-        <div class="label-body">
-          <p class="step-label">04 · AUTHORISED LABEL</p>
-          <h3 id="label-title">공식 유물 라벨</h3>
-          <dl class="label-data">
-            <div><dt>ACCESSION</dt><dd id="label-accession"></dd></div>
-            <div><dt>ESTIMATED DATE</dt><dd>2000–2035 CE</dd></div>
-            <div><dt>CLASSIFICATION</dt><dd id="label-classification"></dd></div>
-            <div><dt>CONFIDENCE</dt><dd id="label-confidence"></dd></div>
-          </dl>
-          <p id="label-description" class="label-description"></p>
-          <details class="truth-envelope">
-            <summary>봉인된 2026년 기록 열기</summary>
-            <p>이 물건의 실제 이름은 <strong id="truth-name"></strong>입니다. 위 기록은 물질적 단서에서 출발했지만, 미래 박물관이 만든 가상의 해석입니다.</p>
-          </details>
+        <div class="scene-action">
+          <p id="experiment-instruction">세 개의 실험 기록을 모두 검토하세요.</p>
+          <button id="experiment-next" class="scene-button" type="button" disabled>박물관 기록 승인실 입장</button>
         </div>
       </section>
 
-      <footer class="result-footer">
+      <section class="approval-section result-scene" data-scene="3" aria-labelledby="approval-title">
+        <div id="approval-gate" class="approval-gate">
+          <p class="step-label">04 · INSTITUTIONAL APPROVAL</p>
+          <h3 id="approval-title">이 가설을<br>공식 역사로 남기시겠습니까?</h3>
+          <p>승인 이후 이 해석은 박물관의 공식 기록이 됩니다.</p>
+          <button id="hold-approve" class="hold-button" type="button"><span>길게 눌러 승인 도장 찍기</span><i aria-hidden="true"></i></button>
+          <small>1.2초 동안 누르세요</small>
+        </div>
+        <div id="approved-record" class="approved-record" hidden>
+          <section class="museum-label" aria-labelledby="label-title">
+            <div class="label-mark">
+              <span>THE</span><b>MISINFORMED</b><span>MUSEUM</span>
+            </div>
+            <div class="label-body">
+              <p class="step-label">04 · AUTHORISED LABEL</p>
+              <h3 id="label-title">공식 유물 라벨</h3>
+              <dl class="label-data">
+                <div><dt>ACCESSION</dt><dd id="label-accession"></dd></div>
+                <div><dt>ESTIMATED DATE</dt><dd>2000–2035 CE</dd></div>
+                <div><dt>CLASSIFICATION</dt><dd id="label-classification"></dd></div>
+                <div><dt>CONFIDENCE</dt><dd id="label-confidence"></dd></div>
+              </dl>
+              <p id="label-description" class="label-description"></p>
+              <details id="truth-envelope" class="truth-envelope">
+                <summary>봉인된 2026년 기록 열기</summary>
+                <p>이 물건의 실제 이름은 <strong id="truth-name"></strong>입니다. 방금 승인한 기록은 AI의 추론을 박물관이 역사로 채택한 결과입니다.</p>
+              </details>
+            </div>
+          </section>
+          <aside id="judgment-prompt" class="judgment-prompt" hidden>
+            <p class="step-label">VISITOR JUDGMENT</p>
+            <h3>틀린 해석이 역사로 기록됐다면,<br>누구의 책임일까요?</h3>
+            <div class="judgment-choices">
+              <button type="button" data-judgment="ai">분석한 AI</button>
+              <button type="button" data-judgment="institution">승인한 인간과 박물관</button>
+            </div>
+            <p id="judgment-response" aria-live="polite"></p>
+          </aside>
+        </div>
+      </section>
+
+      <footer id="result-footer" class="result-footer" hidden>
         <p>관찰은 사실에 가까울 수 있지만, 해석은 선택에 의해 역사가 됩니다.</p>
         <button id="print-button" class="primary-button" type="button">연구 기록 저장</button>
       </footer>
     </section>
   </main>
-  <script src="./app.js"></script>
+  <script src="./app.js?v=3"></script>
 </body>
 </html>
