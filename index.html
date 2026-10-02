@@ -4,9 +4,9 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>오인된 박물관 학예 판단 시스템</title>
-  <meta name="description" content="일상용품을 미래 박물관의 유물로 재해석하는 관람객용 학예 판단 시스템" />
+  <meta name="description" content="2526년 미래 박물관의 학예사가 되어 일상용품의 미래 해석을 검토하고 공식 기록을 결정하는 참여형 시스템" />
   <link rel="icon" href="./favicon.svg" />
-  <link rel="stylesheet" href="./styles.css?v=8" />
+  <link rel="stylesheet" href="./styles.css?v=9" />
 </head>
 <body>
   <main class="shell">
@@ -24,30 +24,30 @@
 
     <section id="intake" class="intake-grid" aria-labelledby="intake-title">
       <div class="intro-copy">
-        <p class="step-label">TEMPORARY CURATOR ACCESS</p>
-        <h2 id="intake-title">오늘의<br>학예위원은<br>당신입니다.</h2>
-        <p class="intake-directive">AI가 만든 가설을 검토하고, 이 해석을 공식 역사로 남길지 결정하세요.</p>
+        <p class="step-label">CURATOR APPOINTMENT · YEAR 2526</p>
+        <h2 id="intake-title">지금부터 당신은<br>2526년 미래 박물관의<br>학예사입니다.</h2>
+        <p class="intake-directive">2026년의 평범한 물건 하나를 선택하세요. 박물관 AI가 남은 흔적만으로 그 용도를 추론하면, 당신은 어떤 해석을 미래의 역사로 전시할지 결정합니다.</p>
         <ol class="procedure-map" aria-label="학예 판단 절차">
-          <li><b>01</b><span>등록<br><small>물건 제보</small></span></li>
-          <li><b>02</b><span>해석<br><small>AI 가설 선택</small></span></li>
-          <li><b>03</b><span>검증<br><small>실험 범위 확인</small></span></li>
-          <li><b>04</b><span>책임<br><small>공식 기록 결정</small></span></li>
+          <li><b>01</b><span>선정<br><small>연구 대상 지명</small></span></li>
+          <li><b>02</b><span>추론<br><small>AI 오인 가설 검토</small></span></li>
+          <li><b>03</b><span>검증<br><small>실험 기록 판독</small></span></li>
+          <li><b>04</b><span>채택<br><small>미래 역사 승인</small></span></li>
         </ol>
       </div>
 
       <form id="artifact-form" class="intake-card">
         <div class="object-entry">
           <span class="document-stamp" aria-hidden="true">CONTEXT<br>SEALED</span>
-          <p class="entry-index">ARCHIVE INPUT · 01</p>
-          <label class="field-label" for="artifact-name">2026년의 실제 물건 이름</label>
+          <p class="entry-index">RESEARCH SUBJECT NOMINATION · 01</p>
+          <label class="field-label" for="artifact-name">어떤 물건을 미래의 유물로 연구하시겠습니까?</label>
           <div class="name-row">
             <input id="artifact-name" name="artifact-name" type="text" inputmode="text" autocomplete="off" placeholder="예: 클립" minlength="1" maxlength="10" pattern="[가-힣]{1,10}" aria-describedby="name-rule" required />
             <span class="sealed">SEALED</span>
           </div>
-          <p id="name-rule" class="input-rule">공백 없이 한글 물건 명사 1–10자</p>
+          <p id="name-rule" class="input-rule">2026년에 사용하는 일상 물건 · 한글 명사 1–10자</p>
           <div class="entry-scale" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
         </div>
-        <button class="primary-button" type="submit">학예 판단 절차 시작</button>
+        <button class="primary-button" type="submit">이 물건의 미래 해석 시작</button>
         <p id="form-error" class="form-error" role="alert" hidden>공백 없이 한글 물건 명사를 10자 이내로 입력해주세요.</p>
       </form>
     </section>
@@ -59,15 +59,15 @@
         <div class="scan-object"><span id="scan-glyph" aria-hidden="true">물</span></div>
         <div class="scan-line"></div>
       </div>
-      <p class="step-label">CURATORIAL SYNTHESIS IN PROGRESS</p>
-      <h2 id="analysis-title">물질적 흔적을 분리하고 있습니다</h2>
+      <p class="step-label">MUSEUM AI INTERPRETATION IN PROGRESS</p>
+      <h2 id="analysis-title">2026년의 맥락을 제거하고 있습니다</h2>
       <div class="progress-track"><span id="progress-bar"></span></div>
       <ol id="analysis-steps" class="analysis-steps">
-        <li data-step="0">시각적 구조 관찰</li>
-        <li data-step="1">맥락 제거</li>
-        <li data-step="2">대안 가설 생성</li>
-        <li data-step="3">검증 실험 설계</li>
-        <li data-step="4">박물관 기록 승인</li>
+        <li data-step="0">형태와 사용 흔적 관찰</li>
+        <li data-step="1">원래 명칭과 용도 봉인</li>
+        <li data-step="2">2526년의 오인 가설 생성</li>
+        <li data-step="3">가설 검증 실험 설계</li>
+        <li data-step="4">담당 학예사 호출</li>
       </ol>
     </section>
 
@@ -78,7 +78,7 @@
           <p id="accession-number" class="accession">MHR-2526-0000</p>
           <h2 id="artifact-title">미분류 유물</h2>
         </div>
-        <button id="restart-button" class="secondary-button" type="button">새 유물 등록</button>
+        <button id="restart-button" class="secondary-button" type="button">다른 물건 연구</button>
       </header>
 
       <div class="result-provenance" aria-label="학예 판단 단계">
@@ -104,15 +104,15 @@
           <p class="step-label">01 · OBSERVATION</p>
           <h3 id="observation-title">관찰된 물질적 단서</h3>
           <ul id="observations" class="observation-list"></ul>
-          <p class="method-note">명칭과 용도는 봉인되어 있습니다. 지금 보이는 흔적만 기억하세요.</p>
-          <button class="scene-button" type="button" data-next-scene="1">가설 보관실 입장</button>
+          <p class="method-note">당신은 2526년의 학예사입니다. 원래 용도를 잊고, 지금 남아 있는 물질적 단서만 검토하세요.</p>
+          <button class="scene-button" type="button" data-next-scene="1">미래의 해석 가설 검토</button>
         </section>
       </div>
 
       <section class="hypothesis-section result-scene" data-scene="1" aria-labelledby="hypothesis-title">
         <div class="section-heading">
-          <div><p class="step-label">02 · HYPOTHESIS</p><h3 id="hypothesis-title">미래 박물관의 네 가지 가설</h3></div>
-          <p>한 가지 해석을 선택하세요. 당신의 선택이 다음 기록의 방향을 결정합니다.</p>
+          <div><p class="step-label">02 · HYPOTHESIS</p><h3 id="hypothesis-title">2526년에는 이 물건을 무엇이라 믿었을까?</h3></div>
+          <p>박물관 AI가 물질적 단서만으로 만든 네 가지 오인 가설입니다. 가장 연구할 가치가 있는 하나를 선택하세요.</p>
         </div>
         <div id="hypothesis-grid" class="hypothesis-grid"></div>
         <div class="scene-action">
@@ -136,8 +136,8 @@
       <section class="approval-section result-scene" data-scene="3" aria-labelledby="approval-title">
         <div id="approval-gate" class="approval-gate">
           <p class="step-label">04 · INSTITUTIONAL APPROVAL</p>
-          <h3 id="approval-title">이 가설을<br>공식 역사로 남기시겠습니까?</h3>
-          <p>승인 이후 이 해석은 박물관의 공식 기록이 됩니다.</p>
+          <h3 id="approval-title">이 해석을<br>2026년의 역사로 전시하시겠습니까?</h3>
+          <p>당신의 승인은 AI의 가설을 2526년 박물관이 믿는 공식 사실로 바꿉니다.</p>
           <button id="hold-approve" class="hold-button" type="button"><span>길게 눌러 승인 도장 찍기</span><i aria-hidden="true"></i></button>
           <button id="return-hypothesis" class="return-button" type="button">보류하고 다른 가설 검토</button>
           <small>1.2초 동안 누르세요</small>
@@ -198,6 +198,6 @@
       </footer>
     </section>
   </main>
-  <script src="./app.js?v=8"></script>
+  <script src="./app.js?v=9"></script>
 </body>
 </html>

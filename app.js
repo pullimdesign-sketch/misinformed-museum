@@ -204,7 +204,7 @@ $('#artifact-form').addEventListener('submit', async (event) => {
 });
 
 async function runAnalysis(){
-  const titles=['표면의 물질적 흔적을 추출합니다','실제 이름과 용도를 봉인합니다','복수의 해석 가설을 생성합니다','반증 가능한 실험을 설계합니다','학예위원의 검토를 기다립니다'];
+  const titles=['형태와 사용 흔적을 수집합니다','2026년의 이름과 용도를 봉인합니다','2526년의 오인 가설을 생성합니다','가설을 검증할 실험을 설계합니다','담당 학예사인 당신의 판단을 기다립니다'];
   for(let i=0;i<5;i++){
     $$('#analysis-steps li').forEach((el,j)=>{el.classList.toggle('active',j===i);el.classList.toggle('done',j<i)});
     $('#analysis-title').textContent=titles[i]; $('#progress-bar').style.width=`${(i+1)*20}%`;
@@ -263,7 +263,7 @@ function renderResult(name){
   $('#label-description').textContent='';
   $('#truth-name').textContent=name;
   $('#hypothesis-next').disabled=true;
-  $('#hypothesis-instruction').textContent='승인 후보를 한 장 선택하세요.';
+  $('#hypothesis-instruction').textContent='박물관 기록으로 발전시킬 가설을 한 장 선택하세요.';
   $('#experiment-next').disabled=true;
   $('#experiment-instruction').textContent='세 개의 실험 기록을 모두 검토하세요.';
   $('#approval-gate').hidden=false;
