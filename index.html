@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>오인된 박물관 학예 판단 시스템</title>
+  <meta name="description" content="일상용품을 미래 박물관의 유물로 재해석하는 관람객용 학예 판단 시스템" />
+  <link rel="icon" href="./favicon.svg" />
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <main class="shell">
+    <header class="masthead">
+      <div>
+        <p class="eyebrow">MHR · MUSEUM OF MISINFORMED HISTORY · 2526</p>
+        <h1>오인된 박물관<br><span>학예 판단 시스템</span></h1>
+        <p class="masthead-note">PUBLIC ACCESSION DESK / TERMINAL 01</p>
+      </div>
+      <div class="status" aria-label="시스템 상태">
+        <span class="status-dot"></span>
+        <span>2526 ARCHIVE ONLINE</span>
+      </div>
+    </header>
+
+    <section id="intake" class="intake-grid" aria-labelledby="intake-title">
+      <div class="intro-copy">
+        <p class="step-label">00 · NEW ACCESSION</p>
+        <h2 id="intake-title">당신의 물건은<br>어떤 역사로 남을까요?</h2>
+        <p>2026년의 실제 물건 이름을 등록하면, 미래 박물관이 이름에서 사용 맥락을 제거하고 새로운 용도를 추론합니다.</p>
+        <p class="small-note">입력한 이름은 기록 봉투에 봉인됩니다. 분석 과정에서는 물건의 일반적인 형태와 물질적 특징만 사용합니다.</p>
+      </div>
+
+      <form id="artifact-form" class="intake-card">
+        <div class="object-entry">
+          <span class="document-stamp" aria-hidden="true">CONTEXT<br>SEALED</span>
+          <p class="entry-index">ARCHIVE INPUT · 01</p>
+          <label class="field-label" for="artifact-name">2026년의 실제 물건 이름</label>
+          <div class="name-row">
+            <input id="artifact-name" name="artifact-name" type="text" inputmode="text" autocomplete="off" placeholder="예: 클립" minlength="1" maxlength="10" pattern="[가-힣]{1,10}" aria-describedby="name-rule" required />
+            <span class="sealed">SEALED</span>
+          </div>
+          <p id="name-rule" class="input-rule">공백 없이 한글 물건 명사 1–10자</p>
+          <div class="entry-scale" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
+        </div>
+        <button class="primary-button" type="submit">미래 해석 시작</button>
+        <p id="form-error" class="form-error" role="alert" hidden>공백 없이 한글 물건 명사를 10자 이내로 입력해주세요.</p>
+      </form>
+    </section>
+
+    <section id="analysis" class="analysis-stage" hidden aria-live="polite">
+      <div class="scan-visual" aria-hidden="true">
+        <div class="orbit orbit-a"></div>
+        <div class="orbit orbit-b"></div>
+        <div class="scan-object"><span id="scan-glyph" aria-hidden="true">물</span></div>
+        <div class="scan-line"></div>
+      </div>
+      <p class="step-label">CURATORIAL SYNTHESIS IN PROGRESS</p>
+      <h2 id="analysis-title">물질적 흔적을 분리하고 있습니다</h2>
+      <div class="progress-track"><span id="progress-bar"></span></div>
+      <ol id="analysis-steps" class="analysis-steps">
+        <li data-step="0">시각적 구조 관찰</li>
+        <li data-step="1">맥락 제거</li>
+        <li data-step="2">대안 가설 생성</li>
+        <li data-step="3">검증 실험 설계</li>
+        <li data-step="4">박물관 기록 승인</li>
+      </ol>
+    </section>
+
+    <section id="result" class="result-stage" hidden>
+      <header class="result-header">
+        <div>
+          <p class="eyebrow">PUBLIC INTERPRETATION RECORD</p>
+          <p id="accession-number" class="accession">MHR-2526-0000</p>
+          <h2 id="artifact-title">미분류 유물</h2>
+        </div>
+        <button id="restart-button" class="secondary-button" type="button">새 유물 등록</button>
+      </header>
+
+      <div class="result-provenance" aria-label="학예 판단 단계">
+        <span>01 관찰</span><i></i><span>02 가설</span><i></i><span>03 실험</span><i></i><span>04 승인</span>
+      </div>
+
+      <div class="evidence-layout">
+        <figure class="artifact-figure">
+          <div class="artifact-token" role="img" aria-label="이름이 봉인된 등록 유물">
+            <span class="token-code">MHR</span>
+            <b id="result-object-glyph">?</b>
+            <span>ORIGINAL CONTEXT SEALED</span>
+          </div>
+          <figcaption><span id="sealed-name">2026 DESIGNATION · SEALED</span><span id="object-metrics"></span></figcaption>
+        </figure>
+        <section class="record-panel" aria-labelledby="observation-title">
+          <p class="step-label">01 · OBSERVATION</p>
+          <h3 id="observation-title">관찰된 물질적 단서</h3>
+          <ul id="observations" class="observation-list"></ul>
+          <p class="method-note">기능을 추정하기 전, 사진에서 확인 가능한 형태와 표면 정보만 기록했습니다.</p>
+        </section>
+      </div>
+
+      <section class="hypothesis-section" aria-labelledby="hypothesis-title">
+        <div class="section-heading">
+          <div><p class="step-label">02 · HYPOTHESIS</p><h3 id="hypothesis-title">미래 박물관의 네 가지 가설</h3></div>
+          <p>각 가설은 관찰에서 출발하지만, 그 단서만으로는 기능을 증명할 수 없습니다.</p>
+        </div>
+        <div id="hypothesis-grid" class="hypothesis-grid"></div>
+      </section>
+
+      <section class="experiment-section" aria-labelledby="experiment-title">
+        <div class="section-heading">
+          <div><p class="step-label">03 · PROPOSED TESTS</p><h3 id="experiment-title">검증을 위한 실험 제안</h3></div>
+          <p>실험은 물성을 확인합니다. 용도를 직접 증명하지는 않습니다.</p>
+        </div>
+        <div id="experiment-list" class="experiment-list"></div>
+      </section>
+
+      <section class="museum-label" aria-labelledby="label-title">
+        <div class="label-mark">
+          <span>THE</span><b>MISINFORMED</b><span>MUSEUM</span>
+        </div>
+        <div class="label-body">
+          <p class="step-label">04 · AUTHORISED LABEL</p>
+          <h3 id="label-title">공식 유물 라벨</h3>
+          <dl class="label-data">
+            <div><dt>ACCESSION</dt><dd id="label-accession"></dd></div>
+            <div><dt>ESTIMATED DATE</dt><dd>2000–2035 CE</dd></div>
+            <div><dt>CLASSIFICATION</dt><dd id="label-classification"></dd></div>
+            <div><dt>CONFIDENCE</dt><dd id="label-confidence"></dd></div>
+          </dl>
+          <p id="label-description" class="label-description"></p>
+          <details class="truth-envelope">
+            <summary>봉인된 2026년 기록 열기</summary>
+            <p>이 물건의 실제 이름은 <strong id="truth-name"></strong>입니다. 위 기록은 물질적 단서에서 출발했지만, 미래 박물관이 만든 가상의 해석입니다.</p>
+          </details>
+        </div>
+      </section>
+
+      <footer class="result-footer">
+        <p>관찰은 사실에 가까울 수 있지만, 해석은 선택에 의해 역사가 됩니다.</p>
+        <button id="print-button" class="primary-button" type="button">연구 기록 저장</button>
+      </footer>
+    </section>
+  </main>
+  <script src="./app.js"></script>
+</body>
+</html>
